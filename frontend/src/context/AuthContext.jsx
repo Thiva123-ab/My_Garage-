@@ -12,12 +12,44 @@ export const ROLES = {
   SERVICE_ADVISOR: 'service_advisor',
 };
 
+// Staff roles — customers are NOT in this list
+export const STAFF_ROLES = [ROLES.ADMIN, ROLES.MECHANIC, ROLES.SERVICE_ADVISOR];
+
 export const ROLE_INFO = {
-  [ROLES.CUSTOMER]: { label: 'Customer', icon: '👤', color: '#00d4ff', description: 'Browse services, book appointments, track your vehicle' },
-  [ROLES.ADMIN]: { label: 'Admin', icon: '🛡️', color: '#7c3aed', description: 'Manage all operations, users, inventory, and reports' },
-  [ROLES.MECHANIC]: { label: 'Mechanic', icon: '👨‍🔧', color: '#ff9100', description: 'View assigned jobs, update repair status, log parts' },
-  [ROLES.SERVICE_ADVISOR]: { label: 'Service Advisor', icon: '📋', color: '#00e676', description: 'Handle bookings, assign jobs, communicate with customers' },
+  [ROLES.CUSTOMER]: {
+    label: 'Customer',
+    icon: '👤',
+    color: '#00d4ff',
+    description: 'Browse services, book appointments, track your vehicle',
+    isStaff: false,
+  },
+  [ROLES.ADMIN]: {
+    label: 'Admin',
+    icon: '🛡️',
+    color: '#7c3aed',
+    description: 'Manage all operations, users, inventory, and reports',
+    isStaff: true,
+    passcode: '1234', // demo passcode — change in production
+  },
+  [ROLES.MECHANIC]: {
+    label: 'Mechanic',
+    icon: '👨‍🔧',
+    color: '#ff9100',
+    description: 'View assigned jobs, update repair status, log parts',
+    isStaff: true,
+    passcode: '5678',
+  },
+  [ROLES.SERVICE_ADVISOR]: {
+    label: 'Service Advisor',
+    icon: '📋',
+    color: '#00e676',
+    description: 'Handle bookings, assign jobs, communicate with customers',
+    isStaff: true,
+    passcode: '9012',
+  },
 };
+
+export const isStaffRole = (role) => STAFF_ROLES.includes(role);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
