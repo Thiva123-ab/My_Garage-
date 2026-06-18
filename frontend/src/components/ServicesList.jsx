@@ -1,40 +1,91 @@
 import React, { useEffect, useState } from 'react';
 
+const API_URL = 'http://localhost:3001';
+
 const ServicesList = () => {
   const [services, setServices] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [activeCategory, setActiveCategory] = useState('All');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // In a real app, this would be an environment variable
-    fetch('http://localhost:3001/api/services')
-      .then(res => res.json())
-      .then(data => {
-        setServices(data);
+    Promise.all([
+      fetch(`${API_URL}/api/services`).then(r => r.json()),
+      fetch(`${API_URL}/api/services/categories`).then(r => r.json()),
+    ])
+      .then(([servicesData, categoriesData]) => {
+        setServices(servicesData);
+        setCategories(['All', ...categoriesData]);
         setLoading(false);
       })
       .catch(err => {
-        console.error("Failed to fetch services:", err);
+        console.error('Failed to fetch services:', err);
         setLoading(false);
       });
   }, []);
 
+  const filteredServices =
+    activeCategory === 'All'
+      ? services
+      : services.filter(s => s.category === activeCategory);
+
   if (loading) {
-    return <div style={{textAlign: 'center', padding: '2rem'}}>Loading Services...</div>;
+    return (
+      <section className="section services-section" id="services">
+        <div className="container">
+          <div style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>Loading services...</div>
+        </div>
+      </section>
+    );
   }
 
   return (
-    <div className="services-grid">
-      {services.map(service => (
-        <div className="service-card" key={service.id}>
-          <h3>{service.name}</h3>
-          <p>{service.description}</p>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span className="price-tag">${service.price}</span>
-            <button className="btn" style={{ padding: '0.5rem 1.5rem', fontSize: '0.9rem' }}>Book Now</button>
-          </div>
+    <section className="section services-section" id="services">
+      <div className="container">
+        <div className="section-header">
+          <div className="section-label">⚙️ What We Do</div>
+          <h2 className="section-title">Complete Garage Services</h2>
+          <p className="section-subtitle">
+            From routine maintenance to major repairs — we handle everything your vehicle needs.
+          </p>
         </div>
-      ))}
-    </div>
+
+        <div className="category-tabs">
+          {categories.map(cat => (
+            <button
+              key={cat}
+              className={`category-tab ${activeCategory === cat ? 'active' : ''}`}
+              onClick={() => setActiveCategory(cat)}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        <div className="services-grid">
+          {filteredServices.map((service, index) => (
+            <div
+              className="service-card fade-in-up"
+              key={service.id}
+              style={{ animationDelay: `${index * 0.05}s` }}
+            >
+              <div className="service-card-header">
+                <div className="service-icon">{service.icon}</div>
+                <span className="service-duration">⏱ {service.duration}</span>
+              </div>
+              <h3>{service.name}</h3>
+              <p>{service.description}</p>
+              <div className="service-card-footer">
+                <div className="service-price">
+                  ${service.price} <small>starting</small>
+                </div>
+                <a href="#booking" className="btn btn-primary btn-sm">Book</a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 };
 

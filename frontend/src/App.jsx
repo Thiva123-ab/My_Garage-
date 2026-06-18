@@ -1,23 +1,24 @@
 import React from 'react';
+import Navbar from './components/Navbar';
+import Hero from './components/Hero';
 import ServicesList from './components/ServicesList';
-import heroImage from './assets/hero.png';
+import JobBoard from './components/JobBoard';
+import Team from './components/Team';
+import Testimonials from './components/Testimonials';
+import BookingForm from './components/BookingForm';
+import Footer from './components/Footer';
 
 function App() {
   return (
     <>
-      <section className="hero-section">
-        <img src={heroImage} alt="Premium Garage Background" className="hero-bg" />
-        <div className="hero-content">
-          <h1>Elite Garage Services</h1>
-          <p>Precision tuning, premium care, and ultimate performance.</p>
-          <button className="btn">Explore Services</button>
-        </div>
-      </section>
-
-      <main className="container">
-        <h2 className="section-title">Our Services</h2>
-        <ServicesList />
-      </main>
+      <Navbar />
+      <Hero />
+      <ServicesList />
+      <JobBoard />
+      <Team />
+      <Testimonials />
+      <BookingForm />
+      <Footer />
     </>
   );
 }
