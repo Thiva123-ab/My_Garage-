@@ -1,75 +1,76 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth, ROLES, ROLE_INFO } from '../context/AuthContext.jsx';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext.jsx';
 
 const LoginPage = () => {
   const [name, setName] = useState('');
-  const [selectedRole, setSelectedRole] = useState('');
+  const [submitting, setSubmitting] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
-    if (!name.trim() || !selectedRole) return;
-    login(name.trim(), selectedRole);
-    // Navigate based on role
-    if (selectedRole === ROLES.CUSTOMER) {
-      navigate('/');
-    } else {
-      navigate('/dashboard');
-    }
+    if (!name.trim()) return;
+    setSubmitting(true);
+    login(name.trim(), 'customer');
+    navigate('/');
   };
 
   return (
     <div className="login-page">
       <div className="login-card">
+        {/* Header */}
         <div className="login-header">
           <div className="login-logo">🔧</div>
           <h1>Welcome to <span className="gradient-text">MyGarage</span></h1>
-          <p>Select your role to continue</p>
+          <p>Your trusted vehicle repair partner</p>
         </div>
 
+        {/* Customer login form */}
         <form onSubmit={handleLogin}>
           <div className="login-input-group">
-            <label htmlFor="login-name">Your Name</label>
+            <label htmlFor="login-name">Your Full Name</label>
             <input
               type="text"
               id="login-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Enter your name"
+              placeholder="e.g. John Smith"
               required
+              autoFocus
             />
           </div>
 
-          <div className="login-roles">
-            {Object.entries(ROLE_INFO).map(([key, info]) => (
-              <div
-                key={key}
-                className={`login-role-card ${selectedRole === key ? 'selected' : ''}`}
-                onClick={() => setSelectedRole(key)}
-                style={{ '--role-color': info.color }}
-              >
-                <div className="role-card-icon">{info.icon}</div>
-                <div className="role-card-info">
-                  <h3>{info.label}</h3>
-                  <p>{info.description}</p>
-                </div>
-                <div className="role-card-check">
-                  {selectedRole === key ? '✓' : ''}
-                </div>
-              </div>
-            ))}
+          {/* Customer benefits */}
+          <div className="customer-benefits">
+            <div className="benefit-item">
+              <span className="benefit-icon">📅</span>
+              <span>Book appointments online</span>
+            </div>
+            <div className="benefit-item">
+              <span className="benefit-icon">🚗</span>
+              <span>Track your vehicle repairs</span>
+            </div>
+            <div className="benefit-item">
+              <span className="benefit-icon">⭐</span>
+              <span>View service history & reviews</span>
+            </div>
           </div>
 
           <button
             type="submit"
             className="btn btn-primary login-submit"
-            disabled={!name.trim() || !selectedRole}
+            disabled={!name.trim() || submitting}
           >
-            Continue as {selectedRole ? ROLE_INFO[selectedRole].label : '...'}
+            {submitting ? '⏳ Signing in...' : '🚀 Continue as Customer'}
           </button>
         </form>
+
+        {/* Staff portal link */}
+        <div className="login-staff-link">
+          <span>Are you a staff member?</span>
+          <Link to="/staff-login" id="staff-portal-link">🔐 Staff Portal</Link>
+        </div>
       </div>
     </div>
   );

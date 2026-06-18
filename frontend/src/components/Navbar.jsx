@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext.jsx';
-import { useAuth, ROLES, ROLE_INFO } from '../context/AuthContext.jsx';
+import { useAuth, ROLES, ROLE_INFO, isStaffRole } from '../context/AuthContext.jsx';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -11,6 +11,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const isDashboard = location.pathname === '/dashboard';
+  const isStaff = isLoggedIn && isStaffRole(user?.role);
 
   const handleLogout = () => {
     logout();
@@ -27,19 +28,19 @@ const Navbar = () => {
         </Link>
 
         <div className={`navbar-links ${menuOpen ? 'open' : ''}`}>
-          {/* Customer / public nav */}
-          {(!isLoggedIn || user?.role === ROLES.CUSTOMER) && !isDashboard && (
+          {/* Public / Customer nav links */}
+          {!isStaff && (
             <>
-              <a href="#services" onClick={() => setMenuOpen(false)}>Services</a>
-              <a href="#job-board" onClick={() => setMenuOpen(false)}>Job Board</a>
-              <a href="#team" onClick={() => setMenuOpen(false)}>Our Team</a>
-              <a href="#testimonials" onClick={() => setMenuOpen(false)}>Reviews</a>
-              <a href="#booking" onClick={() => setMenuOpen(false)}>Book Now</a>
+              <a href="/#services" onClick={() => setMenuOpen(false)}>Services</a>
+              <a href="/#job-board" onClick={() => setMenuOpen(false)}>Job Board</a>
+              <a href="/#team" onClick={() => setMenuOpen(false)}>Our Team</a>
+              <a href="/#testimonials" onClick={() => setMenuOpen(false)}>Reviews</a>
+              <a href="/#booking" onClick={() => setMenuOpen(false)}>Book Now</a>
             </>
           )}
 
-          {/* Dashboard nav for staff roles */}
-          {isLoggedIn && user?.role !== ROLES.CUSTOMER && (
+          {/* Staff nav links */}
+          {isStaff && (
             <>
               <Link to="/" onClick={() => setMenuOpen(false)}>Home</Link>
               <Link to="/dashboard" onClick={() => setMenuOpen(false)}>Dashboard</Link>
@@ -56,20 +57,35 @@ const Navbar = () => {
             {theme === 'dark' ? '☀️' : '🌙'}
           </button>
 
-          {/* Auth */}
+          {/* Auth section */}
           {isLoggedIn ? (
             <div className="nav-user-menu">
-              <div className="nav-user-badge" style={{ '--role-color': ROLE_INFO[user.role]?.color || '#00d4ff' }}>
+              <div
+                className="nav-user-badge"
+                style={{ '--role-color': ROLE_INFO[user.role]?.color || '#00d4ff' }}
+              >
                 <span className="nav-user-icon">{ROLE_INFO[user.role]?.icon}</span>
                 <span className="nav-user-name">{user.name}</span>
-                <span className="nav-user-role">{ROLE_INFO[user.role]?.label}</span>
+                <span
+                  className="nav-user-role"
+                  style={{ background: `${ROLE_INFO[user.role]?.color}20`, color: ROLE_INFO[user.role]?.color }}
+                >
+                  {ROLE_INFO[user.role]?.label}
+                </span>
               </div>
               <button className="btn btn-sm btn-outline nav-logout" onClick={handleLogout}>
                 Logout
               </button>
             </div>
           ) : (
-            <Link to="/login" className="nav-cta" onClick={() => setMenuOpen(false)}>Login</Link>
+            <div className="nav-auth-buttons">
+              <Link to="/login" className="btn btn-sm btn-outline" id="customer-login-btn" onClick={() => setMenuOpen(false)}>
+                Login
+              </Link>
+              <Link to="/staff-login" className="staff-portal-btn" id="staff-login-btn" onClick={() => setMenuOpen(false)}>
+                🔐 Staff
+              </Link>
+            </div>
           )}
         </div>
 

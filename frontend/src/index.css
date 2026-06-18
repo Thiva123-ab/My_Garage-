@@ -1285,6 +1285,137 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ============================================================
+   STAFF PORTAL & CUSTOMER LOGIN EXTRAS
+   ============================================================ */
+
+/* Nav auth buttons (Login + Staff side by side) */
+.nav-auth-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.staff-portal-btn {
+  padding: 0.4rem 0.9rem;
+  background: rgba(124, 58, 237, 0.12);
+  border: 1px solid rgba(124, 58, 237, 0.3);
+  border-radius: var(--radius-full);
+  color: #a78bfa;
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+.staff-portal-btn:hover {
+  background: rgba(124, 58, 237, 0.25);
+  border-color: rgba(124, 58, 237, 0.5);
+  color: #c4b5fd;
+  transform: none;
+}
+
+/* Staff portal page tint */
+.staff-login-page {
+  background: linear-gradient(135deg, #0d0a1a 0%, #120d1f 50%, #0a0a1a 100%);
+}
+
+/* "Authorized only" warning banner */
+.staff-warning-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.8rem 1rem;
+  background: rgba(255, 51, 102, 0.08);
+  border: 1px solid rgba(255, 51, 102, 0.2);
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  color: #ff6699;
+  line-height: 1.4;
+  margin-bottom: 1.5rem;
+}
+
+.staff-warning-banner span:first-child {
+  font-size: 1rem;
+  flex-shrink: 0;
+  margin-top: 0.05rem;
+}
+
+/* Passcode field slide-in */
+.passcode-group {
+  margin-bottom: 1.2rem;
+}
+
+/* Staff login error */
+.staff-login-error {
+  padding: 0.7rem 1rem;
+  background: rgba(255, 51, 102, 0.1);
+  border: 1px solid rgba(255, 51, 102, 0.25);
+  border-radius: var(--radius-sm);
+  color: #ff6699;
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin-bottom: 1.2rem;
+  animation: fadeInUp 0.2s ease-out;
+}
+
+/* Login divider / staff link */
+.login-staff-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 1.8rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.login-staff-link a {
+  font-weight: 600;
+  color: var(--accent-secondary);
+  transition: color var(--transition-fast);
+}
+.login-staff-link a:hover {
+  color: #a78bfa;
+}
+
+/* Customer benefits list */
+.customer-benefits {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1rem 1.2rem;
+  background: rgba(0, 212, 255, 0.04);
+  border: 1px solid rgba(0, 212, 255, 0.1);
+  border-radius: var(--radius-md);
+  margin-bottom: 1.5rem;
+}
+
+.benefit-item {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+.benefit-icon {
+  font-size: 1.1rem;
+  width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* Light theme overrides for new components */
+[data-theme="light"] .staff-portal-btn {
+  color: #7c3aed;
+  background: rgba(124, 58, 237, 0.08);
+}
+[data-theme="light"] .customer-benefits {
+  background: rgba(0, 212, 255, 0.04);
+}
+
+/* ============================================================
    DASHBOARD LAYOUT
    ============================================================ */
 .dashboard {
