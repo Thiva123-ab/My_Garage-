@@ -1030,8 +1030,32 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ============================================================
-   THEME TOGGLE
+   SERVICE AUTO-FILL BADGE
    ============================================================ */
+.service-autofill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  margin-left: 0.6rem;
+  padding: 0.15rem 0.55rem;
+  background: rgba(0, 230, 118, 0.12);
+  color: var(--accent-green);
+  border: 1px solid rgba(0, 230, 118, 0.25);
+  border-radius: var(--radius-full);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  vertical-align: middle;
+  animation: fadeInUp 0.3s ease-out;
+}
+
+.select-prefilled {
+  border-color: var(--accent-green) !important;
+  box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.12) !important;
+  color: var(--text-primary) !important;
+}
+
+
 .theme-toggle {
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid var(--border-color);

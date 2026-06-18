@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useBooking } from '../context/BookingContext.jsx';
 
 const API_URL = 'http://localhost:3001';
 
@@ -7,6 +8,7 @@ const ServicesList = () => {
   const [categories, setCategories] = useState([]);
   const [activeCategory, setActiveCategory] = useState('All');
   const [loading, setLoading] = useState(true);
+  const { bookService } = useBooking();
 
   useEffect(() => {
     Promise.all([
@@ -79,7 +81,12 @@ const ServicesList = () => {
                 <div className="service-price">
                   ${service.price} <small>starting</small>
                 </div>
-                <a href="#booking" className="btn btn-primary btn-sm">Book</a>
+                <button
+                  className="btn btn-primary btn-sm"
+                  onClick={() => bookService(service.name)}
+                >
+                  Book
+                </button>
               </div>
             </div>
           ))}

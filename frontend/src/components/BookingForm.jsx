@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useBooking } from '../context/BookingContext.jsx';
 
 const API_URL = 'http://localhost:3001';
 
@@ -14,6 +15,14 @@ const BookingForm = () => {
   });
   const [message, setMessage] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const { selectedService, setSelectedService } = useBooking();
+
+  // Auto-fill the service dropdown when a service is selected from the cards
+  useEffect(() => {
+    if (selectedService) {
+      setFormData(prev => ({ ...prev, service: selectedService }));
+    }
+  }, [selectedService]);
 
   useEffect(() => {
     fetch(`${API_URL}/api/services`)
@@ -41,6 +50,7 @@ const BookingForm = () => {
       if (res.ok) {
         setMessage({ type: 'success', text: `✅ ${data.message} Booking ID: ${data.booking.id}` });
         setFormData({ name: '', phone: '', vehicle: '', service: '', date: '', notes: '' });
+        setSelectedService(''); // clear the context selection too
       } else {
         setMessage({ type: 'error', text: `❌ ${data.error}` });
       }
@@ -102,13 +112,19 @@ const BookingForm = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="booking-service">Service Needed *</label>
+            <label htmlFor="booking-service">
+              Service Needed *
+              {formData.service && (
+                <span className="service-autofill-badge">✨ Auto-filled</span>
+              )}
+            </label>
             <select
               id="booking-service"
               name="service"
               value={formData.service}
               onChange={handleChange}
               required
+              className={formData.service ? 'select-prefilled' : ''}
             >
               <option value="">Select a service...</option>
               {services.map(s => (
