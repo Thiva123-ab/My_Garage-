@@ -16,10 +16,19 @@ const MechanicDashboard = () => {
       .catch(() => setLoading(false));
   }, []);
 
-  const updateStatus = (jobId, newStatus) => {
-    setJobs(prev =>
-      prev.map(j => j.id === jobId ? { ...j, status: newStatus } : j)
-    );
+  const updateStatus = async (jobId, newStatus) => {
+    try {
+      await fetch(`${API_URL}/api/jobs/${jobId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      setJobs(prev =>
+        prev.map(j => j.id === jobId ? { ...j, status: newStatus } : j)
+      );
+    } catch (err) {
+      console.error('Failed to update job status:', err);
+    }
   };
 
   const filteredJobs = filter === 'all' ? jobs : jobs.filter(j => {

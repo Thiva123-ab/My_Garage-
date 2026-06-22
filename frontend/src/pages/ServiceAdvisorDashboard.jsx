@@ -26,20 +26,34 @@ const ServiceAdvisorDashboard = () => {
     }).catch(() => setLoading(false));
   }, []);
 
-  const handleCreateJob = (e) => {
+  const handleCreateJob = async (e) => {
     e.preventDefault();
-    const job = {
-      id: 'J' + String(jobs.length + 1).padStart(3, '0'),
-      vehicle: newJob.vehicle,
-      owner: newJob.owner,
-      service: newJob.service,
-      status: 'Pending',
-      eta: 'TBD',
-    };
-    setJobs(prev => [job, ...prev]);
-    setNewJob({ vehicle: '', owner: '', service: '', mechanic: '' });
-    setShowNewJob(false);
-    setMessage('✅ Job created successfully!');
+    try {
+      const jobPayload = {
+        id: 'J' + String(jobs.length + 1).padStart(3, '0'),
+        vehicle: newJob.vehicle,
+        owner: newJob.owner,
+        service: newJob.service,
+        status: 'Pending',
+        eta: 'TBD',
+      };
+      const res = await fetch(`${API_URL}/api/jobs`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(jobPayload),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setJobs(prev => [data.job || jobPayload, ...prev]);
+        setNewJob({ vehicle: '', owner: '', service: '', mechanic: '' });
+        setShowNewJob(false);
+        setMessage('✅ Job created successfully!');
+      } else {
+        setMessage(`❌ ${data.error}`);
+      }
+    } catch (err) {
+      setMessage('❌ Failed to create job. Please try again.');
+    }
     setTimeout(() => setMessage(null), 3000);
   };
 
