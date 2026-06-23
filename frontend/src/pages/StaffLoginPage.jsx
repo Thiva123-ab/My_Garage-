@@ -45,7 +45,7 @@ const StaffLoginPage = () => {
         {/* Warning banner */}
         <div className="staff-warning-banner">
           <span>🔒</span>
-          <span>This portal is restricted to MyGarage employees. Unauthorized access is prohibited.</span>
+          <span>This portal is restricted to AutoSync employees. Unauthorized access is prohibited.</span>
         </div>
 
         <form onSubmit={handleLogin}>

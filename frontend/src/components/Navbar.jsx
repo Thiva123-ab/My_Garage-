@@ -24,7 +24,7 @@ const Navbar = () => {
       <div className="container">
         <Link to="/" className="navbar-logo" onClick={() => setMenuOpen(false)}>
           <span className="logo-icon">🔧</span>
-          <span>MyGarage</span>
+          <span>AutoSync</span>
         </Link>
 
         <div className={`navbar-links ${menuOpen ? 'open' : ''}`}>

@@ -22,7 +22,7 @@ const LoginPage = () => {
         {/* Header */}
         <div className="login-header">
           <div className="login-logo">🔧</div>
-          <h1>Welcome to <span className="gradient-text">MyGarage</span></h1>
+          <h1>Welcome to <span className="gradient-text">AutoSync</span></h1>
           <p>Your trusted vehicle repair partner</p>
         </div>
 

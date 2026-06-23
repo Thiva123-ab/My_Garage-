@@ -6,7 +6,7 @@ const Footer = () => {
       <div className="container">
         <div className="footer-grid">
           <div className="footer-brand">
-            <h3>🔧 <span className="gradient-text">MyGarage</span></h3>
+            <h3>🔧 <span className="gradient-text">AutoSync</span></h3>
             <p>
               Your trusted partner for professional vehicle repair, maintenance, and care. 
               We keep your vehicle running at its best — always.
@@ -41,7 +41,7 @@ const Footer = () => {
         </div>
 
         <div className="footer-bottom">
-          <span>© {new Date().getFullYear()} MyGarage. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} AutoSync. All rights reserved.</span>
           <div className="footer-social">
             <a href="#" aria-label="Facebook">📘</a>
             <a href="#" aria-label="Instagram">📸</a>

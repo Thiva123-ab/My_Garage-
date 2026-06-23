@@ -57,7 +57,7 @@ const Testimonials = () => {
           <div className="section-label">⭐ Customer Reviews</div>
           <h2 className="section-title">What Our Clients Say</h2>
           <p className="section-subtitle" style={{ marginBottom: '1.5rem' }}>
-            Real feedback from real vehicle owners who trust MyGarage.
+            Real feedback from real vehicle owners who trust AutoSync.
           </p>
           <button className="btn btn-primary" onClick={() => setShowForm(true)}>
             ✏️ Write a Review
