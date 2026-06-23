@@ -23,6 +23,9 @@ const AdminDashboard = () => {
   const [editingInventory, setEditingInventory] = useState(null);
   const [inventoryForm, setInventoryForm] = useState({ name: '', category: '', quantity: '', price: '', minStock: '', sku: '' });
 
+  // Confirmation Modal State
+  const [confirmModal, setConfirmModal] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
+
   const fetchData = async () => {
     try {
       const [sRes, jRes, tRes, iRes] = await Promise.all([
@@ -83,14 +86,22 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleDeleteService = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this service?')) return;
-    try {
-      await fetch(`${API_URL}/api/services/${id}`, { method: 'DELETE' });
-      fetchData();
-    } catch (err) {
-      console.error('Failed to delete service', err);
-    }
+  const handleDeleteService = (id) => {
+    setConfirmModal({
+      isOpen: true,
+      title: 'Delete Service',
+      message: 'Are you sure you want to delete this service?',
+      onConfirm: async () => {
+        try {
+          await fetch(`${API_URL}/api/services/${id}`, { method: 'DELETE' });
+          fetchData();
+        } catch (err) {
+          console.error('Failed to delete service', err);
+        } finally {
+          setConfirmModal({ isOpen: false, title: '', message: '', onConfirm: null });
+        }
+      }
+    });
   };
 
   // ============================================================
@@ -140,27 +151,43 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleDeleteInventory = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this inventory item?')) return;
-    try {
-      await fetch(`${API_URL}/api/inventory/${id}`, { method: 'DELETE' });
-      fetchData();
-    } catch (err) {
-      console.error('Failed to delete inventory item', err);
-    }
+  const handleDeleteInventory = (id) => {
+    setConfirmModal({
+      isOpen: true,
+      title: 'Delete Inventory Item',
+      message: 'Are you sure you want to delete this inventory item?',
+      onConfirm: async () => {
+        try {
+          await fetch(`${API_URL}/api/inventory/${id}`, { method: 'DELETE' });
+          fetchData();
+        } catch (err) {
+          console.error('Failed to delete inventory item', err);
+        } finally {
+          setConfirmModal({ isOpen: false, title: '', message: '', onConfirm: null });
+        }
+      }
+    });
   };
 
   // ============================================================
   // JOB MANAGEMENT (ADMIN ACTIONS)
   // ============================================================
-  const handleDeleteJob = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this job?')) return;
-    try {
-      await fetch(`${API_URL}/api/jobs/${id}`, { method: 'DELETE' });
-      fetchData();
-    } catch (err) {
-      console.error('Failed to delete job', err);
-    }
+  const handleDeleteJob = (id) => {
+    setConfirmModal({
+      isOpen: true,
+      title: 'Delete Job',
+      message: 'Are you sure you want to delete this job?',
+      onConfirm: async () => {
+        try {
+          await fetch(`${API_URL}/api/jobs/${id}`, { method: 'DELETE' });
+          fetchData();
+        } catch (err) {
+          console.error('Failed to delete job', err);
+        } finally {
+          setConfirmModal({ isOpen: false, title: '', message: '', onConfirm: null });
+        }
+      }
+    });
   };
 
   const handleUpdateJobStatus = async (id, newStatus) => {
@@ -408,6 +435,32 @@ const AdminDashboard = () => {
                 <button type="button" className="btn" style={{ background: 'rgba(255,255,255,0.1)', color: 'white' }} onClick={() => setShowInventoryModal(false)}>Cancel</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Confirmation Modal */}
+      {confirmModal.isOpen && (
+        <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div className="modal-content" style={{ background: '#1e293b', padding: '2rem', borderRadius: '12px', width: '90%', maxWidth: '400px', border: '1px solid rgba(255,255,255,0.1)', textAlign: 'center', boxShadow: '0 10px 25px rgba(0,0,0,0.5)' }}>
+            <h2 style={{ marginTop: 0, color: 'var(--accent-red)', marginBottom: '1rem' }}>{confirmModal.title}</h2>
+            <p style={{ color: '#cbd5e1', marginBottom: '2rem', fontSize: '1.1rem' }}>{confirmModal.message}</p>
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+              <button 
+                className="btn btn-primary" 
+                style={{ background: 'var(--accent-red)', borderColor: 'var(--accent-red)', flex: 1, padding: '0.8rem' }}
+                onClick={confirmModal.onConfirm}
+              >
+                Yes, Delete
+              </button>
+              <button 
+                className="btn" 
+                style={{ background: 'rgba(255,255,255,0.1)', color: 'white', flex: 1, padding: '0.8rem' }} 
+                onClick={() => setConfirmModal({ isOpen: false, title: '', message: '', onConfirm: null })}
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}
