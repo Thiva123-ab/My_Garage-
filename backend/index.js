@@ -43,6 +43,55 @@ app.get('/api/services', async (req, res) => {
   }
 });
 
+app.post('/api/services', async (req, res) => {
+  try {
+    const { name, category, description, price, duration, icon } = req.body;
+    if (!name || !price) {
+      return res.status(400).json({ error: 'Name and price are required.' });
+    }
+    const serviceData = {
+      id: Date.now(), // Generate a numeric ID for sorting
+      name,
+      category: category || 'General',
+      description: description || '',
+      price: Number(price),
+      duration: duration || 'TBD',
+      icon: icon || '🔧'
+    };
+    const docRef = await addDoc(collection(db, 'services'), serviceData);
+    res.status(201).json({ message: 'Service created!', service: { _docId: docRef.id, ...serviceData } });
+  } catch (error) {
+    console.error('Error creating service:', error.message);
+    res.status(500).json({ error: 'Failed to create service' });
+  }
+});
+
+app.patch('/api/services/:id', async (req, res) => {
+  try {
+    const serviceId = req.params.id; // This is the _docId
+    const updates = req.body;
+    
+    const docRef = doc(db, 'services', serviceId);
+    await updateDoc(docRef, updates);
+    res.json({ message: 'Service updated!', updates });
+  } catch (error) {
+    console.error('Error updating service:', error.message);
+    res.status(500).json({ error: 'Failed to update service' });
+  }
+});
+
+app.delete('/api/services/:id', async (req, res) => {
+  try {
+    const { deleteDoc } = require('firebase/firestore');
+    const docRef = doc(db, 'services', req.params.id);
+    await deleteDoc(docRef);
+    res.json({ message: 'Service deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting service:', error.message);
+    res.status(500).json({ error: 'Failed to delete service' });
+  }
+});
+
 app.get('/api/services/categories', async (req, res) => {
   try {
     const services = await getCollection('services');
@@ -140,6 +189,76 @@ app.get('/api/testimonials', async (req, res) => {
   } catch (error) {
     console.error('Error fetching testimonials:', error.message);
     res.status(500).json({ error: 'Failed to fetch testimonials' });
+  }
+});
+
+// ============================================================
+// INVENTORY ROUTES
+// ============================================================
+
+app.get('/api/inventory', async (req, res) => {
+  try {
+    const inventory = await getCollection('inventory');
+    res.json(inventory);
+  } catch (error) {
+    console.error('Error fetching inventory:', error.message);
+    res.status(500).json({ error: 'Failed to fetch inventory' });
+  }
+});
+
+app.post('/api/inventory', async (req, res) => {
+  try {
+    const { name, category, quantity, price, status, minStock, sku } = req.body;
+    if (!name || quantity === undefined || price === undefined) {
+      return res.status(400).json({ error: 'Name, quantity, and price are required.' });
+    }
+    const item = {
+      name,
+      category: category || 'General',
+      quantity: Number(quantity),
+      price: Number(price),
+      status: status || (Number(quantity) > 0 ? 'In Stock' : 'Out of Stock'),
+      minStock: minStock ? Number(minStock) : 5,
+      sku: sku || `SKU-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+    };
+    const docRef = await addDoc(collection(db, 'inventory'), item);
+    res.status(201).json({ message: 'Inventory item created!', item: { _docId: docRef.id, ...item } });
+  } catch (error) {
+    console.error('Error creating inventory item:', error.message);
+    res.status(500).json({ error: 'Failed to create inventory item' });
+  }
+});
+
+app.patch('/api/inventory/:id', async (req, res) => {
+  try {
+    const itemId = req.params.id;
+    const updates = req.body;
+    
+    // Check if document exists first
+    const docRef = doc(db, 'inventory', itemId);
+    const docSnap = await getDoc(docRef);
+    if (!docSnap.exists()) {
+      return res.status(404).json({ error: 'Inventory item not found' });
+    }
+
+    await updateDoc(docRef, updates);
+    res.json({ message: 'Inventory item updated!', updates });
+  } catch (error) {
+    console.error('Error updating inventory item:', error.message);
+    res.status(500).json({ error: 'Failed to update inventory item' });
+  }
+});
+
+app.delete('/api/inventory/:id', async (req, res) => {
+  try {
+    const { deleteDoc } = require('firebase/firestore');
+    const docRef = doc(db, 'inventory', req.params.id);
+    await deleteDoc(docRef);
+    res.json({ message: 'Inventory item deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting inventory item:', error.message);
+    res.status(500).json({ error: 'Failed to delete inventory item' });
   }
 });
 

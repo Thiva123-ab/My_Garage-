@@ -29,7 +29,7 @@ export const ROLE_INFO = {
     color: '#7c3aed',
     description: 'Manage all operations, users, inventory, and reports',
     isStaff: true,
-    passcode: '1234', // demo passcode — change in production
+    passcode: 'admin@123', // demo passcode — change in production
   },
   [ROLES.MECHANIC]: {
     label: 'Mechanic',
