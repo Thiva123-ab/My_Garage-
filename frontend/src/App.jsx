@@ -9,6 +9,7 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import StaffLoginPage from './pages/StaffLoginPage';
 import DashboardPage from './pages/DashboardPage';
+import Chatbot from './components/Chatbot';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <BookingProvider>
           <Router>
             <Navbar />
+            <Chatbot />
             <Routes>
               {/* Public routes */}
               <Route path="/" element={<HomePage />} />
