@@ -2,81 +2,77 @@ const { db } = require('./firebaseConfig');
 const { collection, doc, setDoc } = require('firebase/firestore');
 
 // ============================================================
-// ALL GARAGE DATA TO SEED INTO FIRESTORE
+// REALISTIC GARAGE DATA TO SEED INTO FIRESTORE
 // ============================================================
 
 const services = [
   // Engine & Mechanical
-  { id: 1, category: 'Engine & Mechanical', name: 'Engine Diagnostics', description: 'Advanced OBD-II scanning, check engine light diagnosis, and computer-based fault detection.', price: 80, icon: '🔧', duration: '1 hr' },
-  { id: 2, category: 'Engine & Mechanical', name: 'Engine Repair & Rebuild', description: 'Complete engine teardown, inspection, and rebuild with OEM-quality parts.', price: 1500, icon: '⚙️', duration: '3-5 days' },
-  { id: 3, category: 'Engine & Mechanical', name: 'Timing Belt / Chain Replacement', description: 'Replace worn timing belts or chains to prevent catastrophic engine failure.', price: 450, icon: '🔗', duration: '3-5 hrs' },
-  { id: 4, category: 'Engine & Mechanical', name: 'Head Gasket Repair', description: 'Fix blown head gaskets, resurface cylinder heads, and restore compression.', price: 1200, icon: '🛠️', duration: '2-3 days' },
+  { id: 1, category: 'Engine & Mechanical', name: 'Comprehensive Engine Diagnostics', description: 'Advanced OBD-II and oscilloscope scanning, real-time sensor data logging, and professional fault detection.', price: 120, icon: '🔧', duration: '1-2 hrs' },
+  { id: 2, category: 'Engine & Mechanical', name: 'Engine Rebuild & Overhaul', description: 'Complete teardown, precision machining, gasket replacement, and reassembly with OEM-certified parts.', price: 2500, icon: '⚙️', duration: '5-7 days' },
+  { id: 3, category: 'Engine & Mechanical', name: 'Timing Belt & Water Pump Service', description: 'Replacement of timing belt, tensioners, idler pulleys, and water pump to prevent catastrophic failure.', price: 650, icon: '🔗', duration: '4-6 hrs' },
+  { id: 4, category: 'Engine & Mechanical', name: 'Cylinder Head Gasket Repair', description: 'Cylinder head resurfacing, valve seating, pressure testing, and multi-layer steel gasket installation.', price: 1400, icon: '🛠️', duration: '3 days' },
 
   // Oil & Fluids
-  { id: 5, category: 'Oil & Fluids', name: 'Full Synthetic Oil Change', description: 'Premium full-synthetic oil, new filter, and 21-point inspection included.', price: 65, icon: '🛢️', duration: '30 min' },
-  { id: 6, category: 'Oil & Fluids', name: 'Transmission Fluid Flush', description: 'Complete flush and refill of automatic or manual transmission fluid.', price: 180, icon: '💧', duration: '1 hr' },
-  { id: 7, category: 'Oil & Fluids', name: 'Coolant System Flush', description: 'Drain, flush, and refill coolant system to prevent overheating.', price: 120, icon: '❄️', duration: '45 min' },
-  { id: 8, category: 'Oil & Fluids', name: 'Brake Fluid Replacement', description: 'Bleed and replace brake fluid for optimal braking performance.', price: 90, icon: '🧴', duration: '45 min' },
+  { id: 5, category: 'Oil & Fluids', name: 'Premium Full-Synthetic Oil Service', description: 'Includes up to 5 quarts of Mobil 1 synthetic oil, premium OEM filter, and a comprehensive 30-point safety inspection.', price: 85, icon: '🛢️', duration: '45 min' },
+  { id: 6, category: 'Oil & Fluids', name: 'Transmission Fluid Exchange', description: 'Complete hydraulic flush and refill of automatic or manual transmission fluid using OEM-grade spec fluid.', price: 210, icon: '💧', duration: '1.5 hrs' },
+  { id: 7, category: 'Oil & Fluids', name: 'Coolant System Power Flush', description: 'Pressurized drain, chemical flush, and refill of engine coolant to prevent overheating and corrosion.', price: 145, icon: '❄️', duration: '1 hr' },
+  { id: 8, category: 'Oil & Fluids', name: 'Brake Fluid Bleed & Replacement', description: 'Vacuum bleed of all brake lines and ABS pump module, replacing old fluid with high-temp DOT 4 fluid.', price: 110, icon: '🧴', duration: '1 hr' },
 
   // Brakes
-  { id: 9, category: 'Brakes', name: 'Brake Pad Replacement', description: 'Install new ceramic or semi-metallic brake pads on front or rear axle.', price: 180, icon: '🛑', duration: '1-2 hrs' },
-  { id: 10, category: 'Brakes', name: 'Brake Rotor Resurfacing / Replacement', description: 'Resurface or replace warped rotors for smooth, safe stopping.', price: 250, icon: '💿', duration: '2 hrs' },
-  { id: 11, category: 'Brakes', name: 'Brake Caliper Repair', description: 'Rebuild or replace seized or leaking brake calipers.', price: 320, icon: '🔩', duration: '2-3 hrs' },
+  { id: 9, category: 'Brakes', name: 'Premium Ceramic Brake Pad Replacement', description: 'Installation of ultra-quiet, low-dust ceramic brake pads on front or rear axles. Includes caliper greasing.', price: 220, icon: '🛑', duration: '1.5 hrs' },
+  { id: 10, category: 'Brakes', name: 'Brake Rotor Replacement', description: 'Replacement of scored or warped brake rotors with high-carbon, cross-drilled, or slotted OEM equivalents.', price: 350, icon: '💿', duration: '2 hrs' },
+  { id: 11, category: 'Brakes', name: 'Brake Caliper Rebuild', description: 'Complete disassembly, cleaning, and resealing of seized or leaking brake calipers with new pistons/seals.', price: 280, icon: '🔩', duration: '3 hrs' },
 
   // Tires & Wheels
-  { id: 12, category: 'Tires & Wheels', name: 'Tire Replacement & Mounting', description: 'Supply and mount new tires, including balancing and valve stems.', price: 120, icon: '🔘', duration: '1 hr' },
-  { id: 13, category: 'Tires & Wheels', name: 'Wheel Alignment', description: 'Precision 4-wheel alignment using laser-guided equipment.', price: 85, icon: '📐', duration: '45 min' },
-  { id: 14, category: 'Tires & Wheels', name: 'Tire Rotation & Balancing', description: 'Rotate and rebalance all four tires for even tread wear.', price: 40, icon: '🔄', duration: '30 min' },
-  { id: 15, category: 'Tires & Wheels', name: 'Flat Tire Repair', description: 'Patch or plug punctured tires and restore to safe pressure.', price: 25, icon: '🩹', duration: '20 min' },
+  { id: 12, category: 'Tires & Wheels', name: 'Tire Mounting & Road-Force Balancing', description: 'Mounting of new tires and precision Road-Force balancing to eliminate high-speed steering wheel vibrations.', price: 160, icon: '🔘', duration: '1.5 hrs' },
+  { id: 13, category: 'Tires & Wheels', name: 'Computerized 4-Wheel Alignment', description: 'Precision laser-guided 4-wheel alignment to factory camber, caster, and toe specifications.', price: 115, icon: '📐', duration: '1 hr' },
+  { id: 14, category: 'Tires & Wheels', name: 'Tire Rotation & Tread Inspection', description: 'Cross-rotation of tires to ensure even tread wear, including a deep inspection of sidewall health.', price: 45, icon: '🔄', duration: '30 min' },
 
   // Electrical
-  { id: 16, category: 'Electrical', name: 'Battery Testing & Replacement', description: 'Load-test battery and install new one if needed with warranty.', price: 150, icon: '🔋', duration: '30 min' },
-  { id: 17, category: 'Electrical', name: 'Alternator Repair / Replacement', description: 'Diagnose charging issues and replace faulty alternators.', price: 380, icon: '⚡', duration: '2 hrs' },
-  { id: 18, category: 'Electrical', name: 'Starter Motor Replacement', description: 'Replace worn starter motor for reliable engine cranking.', price: 350, icon: '🔑', duration: '2 hrs' },
-  { id: 19, category: 'Electrical', name: 'Wiring & Lighting Repair', description: 'Fix faulty wiring, headlights, tail lights, and interior lighting.', price: 100, icon: '💡', duration: '1-2 hrs' },
+  { id: 15, category: 'Electrical', name: 'Battery Load Testing & Replacement', description: 'Deep-cycle load testing. Includes installation of a new AGM battery with terminal anti-corrosion treatment.', price: 185, icon: '🔋', duration: '45 min' },
+  { id: 16, category: 'Electrical', name: 'Alternator & Charging System Repair', description: 'Full charging system diagnostic. Replacement of faulty alternators with heavy-duty OEM components.', price: 450, icon: '⚡', duration: '2.5 hrs' },
+  { id: 17, category: 'Electrical', name: 'Complex Wiring & Harness Repair', description: 'Tracing and repairing electrical shorts, parasitic battery drains, and rodent-damaged wire harnesses.', price: 150, icon: '💡', duration: 'Diagnostic-based' },
 
   // Suspension & Steering
-  { id: 20, category: 'Suspension & Steering', name: 'Shock & Strut Replacement', description: 'Replace worn shocks or struts for a smoother, safer ride.', price: 400, icon: '🏎️', duration: '2-3 hrs' },
-  { id: 21, category: 'Suspension & Steering', name: 'Power Steering Repair', description: 'Fix leaks, replace pump, or flush power steering system.', price: 300, icon: '🎯', duration: '2 hrs' },
-  { id: 22, category: 'Suspension & Steering', name: 'Ball Joint / Tie Rod Replacement', description: 'Replace worn steering and suspension linkage components.', price: 250, icon: '🔗', duration: '2 hrs' },
-
-  // Exhaust & Emissions
-  { id: 23, category: 'Exhaust & Emissions', name: 'Exhaust System Repair', description: 'Weld, patch, or replace damaged muffler, pipes, and catalytic converter.', price: 350, icon: '💨', duration: '2-3 hrs' },
-  { id: 24, category: 'Exhaust & Emissions', name: 'Emissions Testing & Repair', description: 'Perform emissions test and fix issues to pass inspection.', price: 100, icon: '🌿', duration: '1 hr' },
+  { id: 18, category: 'Suspension & Steering', name: 'MacPherson Strut & Shock Replacement', description: 'Replacement of leaking or worn shock absorbers/struts to restore factory ride comfort and handling.', price: 550, icon: '🏎️', duration: '3 hrs' },
+  { id: 19, category: 'Suspension & Steering', name: 'Power Steering Rack Replacement', description: 'Replacement of leaking steering racks, including high-pressure lines and a full hydraulic system flush.', price: 850, icon: '🎯', duration: '4 hrs' },
 
   // AC & Heating
-  { id: 25, category: 'AC & Heating', name: 'AC Recharge & Repair', description: 'Evacuate, recharge refrigerant, and repair leaks in AC system.', price: 200, icon: '🧊', duration: '1-2 hrs' },
-  { id: 26, category: 'AC & Heating', name: 'Heater Core Replacement', description: 'Replace clogged or leaking heater core for cabin heating.', price: 600, icon: '🔥', duration: '4-6 hrs' },
+  { id: 20, category: 'AC & Heating', name: 'AC Evacuation & Recharge', description: 'Vacuum evacuation of the AC system, leak testing with UV dye, and precision recharge of R134a/R1234yf refrigerant.', price: 225, icon: '🧊', duration: '1.5 hrs' },
+  { id: 21, category: 'AC & Heating', name: 'HVAC Blend Door Actuator Repair', description: 'Dashboard disassembly to replace failing blend door actuators causing uneven cabin temperature.', price: 400, icon: '🔥', duration: '3-5 hrs' },
 
   // Body & Paint
-  { id: 27, category: 'Body & Paint', name: 'Dent Removal (PDR)', description: 'Paintless dent repair for minor dents and dings without repainting.', price: 150, icon: '🪄', duration: '1-2 hrs' },
-  { id: 28, category: 'Body & Paint', name: 'Scratch & Paint Repair', description: 'Color-matched paint touch-up, scratch buffing, and panel repaint.', price: 300, icon: '🎨', duration: '1-2 days' },
-  { id: 29, category: 'Body & Paint', name: 'Full Body Respray', description: 'Complete vehicle repaint with primer, base coat, and clear coat.', price: 3000, icon: '🖌️', duration: '5-7 days' },
+  { id: 22, category: 'Body & Paint', name: 'Paintless Dent Repair (PDR)', description: 'Specialized removal of hail damage, door dings, and minor creases without the need for repainting or body filler.', price: 180, icon: '🪄', duration: '1-3 hrs' },
+  { id: 23, category: 'Body & Paint', name: 'Ceramic Coating & Paint Correction', description: 'Multi-stage machine compounding and polishing, followed by a professional 9H ceramic coating application.', price: 850, icon: '✨', duration: '2 days' },
 
   // Transmission
-  { id: 30, category: 'Transmission', name: 'Clutch Replacement', description: 'Replace worn clutch disc, pressure plate, and throw-out bearing.', price: 800, icon: '🔀', duration: '4-6 hrs' },
-  { id: 31, category: 'Transmission', name: 'Gearbox Repair', description: 'Diagnose and repair manual or automatic gearbox issues.', price: 1200, icon: '⚙️', duration: '2-4 days' },
+  { id: 24, category: 'Transmission', name: 'Dual-Clutch / Manual Clutch Replacement', description: 'Replacement of worn clutch friction discs, pressure plates, dual-mass flywheels, and throw-out bearings.', price: 1100, icon: '🔀', duration: '6-8 hrs' },
 
   // Inspection & Maintenance
-  { id: 32, category: 'Inspection & Maintenance', name: 'Full Vehicle Inspection', description: 'Comprehensive 50-point safety and mechanical inspection report.', price: 60, icon: '📋', duration: '1 hr' },
-  { id: 33, category: 'Inspection & Maintenance', name: 'Pre-Purchase Inspection', description: 'Thorough inspection before buying a used vehicle — engine, body, frame.', price: 100, icon: '🔍', duration: '1.5 hrs' },
-  { id: 34, category: 'Inspection & Maintenance', name: 'Scheduled Maintenance Service', description: 'Manufacturer-recommended service at mileage intervals (30k, 60k, 90k).', price: 250, icon: '📅', duration: '2-4 hrs' },
+  { id: 25, category: 'Inspection & Maintenance', name: 'Comprehensive Pre-Purchase Inspection', description: 'A rigorous 150-point inspection covering drivetrain, chassis, electronics, and paint depth to verify vehicle history.', price: 175, icon: '🔍', duration: '2 hrs' },
+  { id: 26, category: 'Inspection & Maintenance', name: 'Factory 60k/90k Mile Service', description: 'Complete scheduled maintenance following strict manufacturer guidelines to keep your warranty intact.', price: 350, icon: '📅', duration: '3-4 hrs' },
 ];
 
-const jobBoard = [];
+const jobBoard = [
+  { id: 'J001', vehicle: '2022 Lexus RX 350', owner: 'Robert Perera', service: 'Premium Full-Synthetic Oil Service', status: 'In Progress', eta: '45 min' },
+  { id: 'J002', vehicle: '2019 Ford Mustang GT', owner: 'Daniel Smith', service: 'Brake Rotor Replacement', status: 'Pending', eta: '2 hrs' },
+  { id: 'J003', vehicle: '2021 Honda CR-V', owner: 'Priya Sharma', service: 'Computerized 4-Wheel Alignment', status: 'Ready for Pickup', eta: 'Done' },
+  { id: 'J004', vehicle: '2018 Toyota Hilux', owner: 'Kasun Bandara', service: 'Comprehensive Engine Diagnostics', status: 'In Progress', eta: '3 hrs' },
+  { id: 'J005', vehicle: '2023 Tesla Model Y', owner: 'Jennifer Wong', service: 'Comprehensive Pre-Purchase Inspection', status: 'Completed', eta: 'Done' },
+];
 
 const teamMembers = [
-  { id: 1, name: 'James Rodriguez', role: 'Master Mechanic', specialty: 'Engine & Transmission', experience: '15 years', avatar: '👨‍🔧' },
-  { id: 2, name: 'Michael Chen', role: 'Senior Technician', specialty: 'Electrical & Diagnostics', experience: '10 years', avatar: '🧑‍🔧' },
-  { id: 3, name: 'Sarah Thompson', role: 'Body & Paint Specialist', specialty: 'Collision Repair & Painting', experience: '8 years', avatar: '👩‍🔧' },
-  { id: 4, name: 'David Park', role: 'Tire & Alignment Tech', specialty: 'Suspension & Steering', experience: '6 years', avatar: '🧑‍🔧' },
+  { id: 1, name: 'Michael Thompson', role: 'Master Diagnostic Tech', specialty: 'Advanced Electronics & Diagnostics', experience: '15 years', avatar: '👨‍🔧' },
+  { id: 2, name: 'David Silva', role: 'Lead Technician', specialty: 'Engine Performance & Drivetrain', experience: '12 years', avatar: '🧑‍🔧' },
+  { id: 3, name: 'Sarah Jenkins', role: 'Transmission Specialist', specialty: 'Automatic & Manual Gearboxes', experience: '8 years', avatar: '👩‍🔧' },
+  { id: 4, name: 'James Miller', role: 'Chassis & Alignment Tech', specialty: 'Suspension, Brakes & Steering', experience: '10 years', avatar: '🧑‍🔧' },
 ];
 
 const testimonials = [
-  { id: 1, name: 'Robert H.', rating: 5, text: 'Outstanding service! They diagnosed an engine issue other shops missed. Fair pricing too.', vehicle: '2020 Audi A4' },
-  { id: 2, name: 'Maria G.', rating: 5, text: 'Best AC repair I have ever had. My car feels brand new in this heat!', vehicle: '2019 Honda CR-V' },
-  { id: 3, name: 'Kevin T.', rating: 4, text: 'Quick oil change and they caught a brake issue before it became dangerous. Highly recommend.', vehicle: '2021 Chevrolet Malibu' },
-  { id: 4, name: 'Jennifer L.', rating: 5, text: 'The body work was flawless. You cannot even tell where the dent used to be!', vehicle: '2022 Tesla Model 3' },
+  { id: 1, name: 'Marcus T.', rating: 5, text: 'The team at MyGarage is exceptional. They properly diagnosed an electrical module issue on my BMW that the dealership couldn\'t even figure out. Highly recommended!', vehicle: '2020 BMW 530i' },
+  { id: 2, name: 'Amanda R.', rating: 5, text: 'Honest pricing and incredible turnaround time. David explained exactly what was wrong with my suspension and showed me the worn out parts before doing any work.', vehicle: '2018 Subaru Outback' },
+  { id: 3, name: 'S. Fernando', rating: 4, text: 'Got a full synthetic oil change and tire rotation done here. The waiting area is spotless, and they finished 15 minutes faster than promised.', vehicle: '2022 Toyota Corolla' },
+  { id: 4, name: 'John D.', rating: 5, text: 'I brought my truck in for transmission shuddering. Sarah rebuilt the valve body and it drives like it just rolled off the factory floor. Worth every penny.', vehicle: '2019 Ford F-150' },
 ];
 
 // ============================================================
@@ -95,7 +91,7 @@ async function seedCollection(collectionName, items, idField) {
 }
 
 async function seed() {
-  console.log('🚀 Starting MyGarage Firestore data seeding...\n');
+  console.log('🚀 Starting MyGarage REALISTIC Firestore data seeding...\n');
 
   try {
     await seedCollection('services', services, 'id');
@@ -103,7 +99,7 @@ async function seed() {
     await seedCollection('team', teamMembers, 'id');
     await seedCollection('testimonials', testimonials, 'id');
 
-    console.log('\n🎉 All data seeded successfully!');
+    console.log('\n🎉 All realistic data seeded successfully!');
     console.log('📊 Summary:');
     console.log(`   - Services:     ${services.length} documents`);
     console.log(`   - Jobs:         ${jobBoard.length} documents`);
