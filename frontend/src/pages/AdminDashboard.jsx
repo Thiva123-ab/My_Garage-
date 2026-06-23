@@ -292,7 +292,7 @@ const AdminDashboard = () => {
                       {item.quantity}
                     </span>
                   </td>
-                  <td>${item.price.toFixed(2)}</td>
+                  <td>Rs.{item.price.toLocaleString('en-IN')}</td>
                   <td>
                     <span className={`status-badge ${item.status === 'In Stock' ? 'completed' : item.status === 'Low Stock' ? 'pending' : 'in-progress'}`}>
                       {item.quantity <= item.minStock && item.quantity > 0 ? 'Low Stock' : item.status}
@@ -332,7 +332,7 @@ const AdminDashboard = () => {
                 <span>{s.category}</span>
               </div>
               <span className="admin-service-duration">{s.duration}</span>
-              <span className="admin-service-price" style={{ width: '80px', textAlign: 'right' }}>${s.price}</span>
+              <span className="admin-service-price" style={{ width: '100px', textAlign: 'right' }}>Rs.{s.price.toLocaleString('en-IN')}</span>
               <div className="action-btn-group" style={{ marginLeft: '1rem' }}>
                 <button className="action-btn edit-btn" onClick={() => openEditService(s)} title="Edit">✏️</button>
                 <button className="action-btn delete-btn" onClick={() => handleDeleteService(s._docId)} title="Delete">🗑️</button>
@@ -401,7 +401,7 @@ const AdminDashboard = () => {
             <form onSubmit={handleServiceSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <input required type="text" placeholder="Service Name" value={serviceForm.name} onChange={e => setServiceForm({...serviceForm, name: e.target.value})} style={{ padding: '0.8rem', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'white' }} />
               <input required type="text" placeholder="Category (e.g. Brakes)" value={serviceForm.category} onChange={e => setServiceForm({...serviceForm, category: e.target.value})} style={{ padding: '0.8rem', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'white' }} />
-              <input required type="number" placeholder="Price ($)" value={serviceForm.price} onChange={e => setServiceForm({...serviceForm, price: e.target.value})} style={{ padding: '0.8rem', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'white' }} />
+              <input required type="number" placeholder="Price (Rs.)" value={serviceForm.price} onChange={e => setServiceForm({...serviceForm, price: e.target.value})} style={{ padding: '0.8rem', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'white' }} />
               <input required type="text" placeholder="Duration (e.g. 2 hrs)" value={serviceForm.duration} onChange={e => setServiceForm({...serviceForm, duration: e.target.value})} style={{ padding: '0.8rem', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'white' }} />
               <input type="text" placeholder="Icon Emoji (e.g. 🔧)" value={serviceForm.icon} onChange={e => setServiceForm({...serviceForm, icon: e.target.value})} style={{ padding: '0.8rem', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'white' }} />
               <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
@@ -428,7 +428,7 @@ const AdminDashboard = () => {
                 <input required type="number" placeholder="Min Alert Stock" value={inventoryForm.minStock} onChange={e => setInventoryForm({...inventoryForm, minStock: e.target.value})} style={{ flex: 1, padding: '0.8rem', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'white' }} />
               </div>
               
-              <input required type="number" step="0.01" placeholder="Price ($)" value={inventoryForm.price} onChange={e => setInventoryForm({...inventoryForm, price: e.target.value})} style={{ padding: '0.8rem', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'white' }} />
+              <input required type="number" step="0.01" placeholder="Price (Rs.)" value={inventoryForm.price} onChange={e => setInventoryForm({...inventoryForm, price: e.target.value})} style={{ padding: '0.8rem', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'white' }} />
               
               <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
                 <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>Save Item</button>

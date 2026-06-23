@@ -129,7 +129,7 @@ const BookingForm = () => {
               <option value="">Select a service...</option>
               {services.map(s => (
                 <option key={s.id} value={s.name}>
-                  {s.name} — ${s.price}
+                  {s.name} — Rs.{s.price.toLocaleString('en-IN')}
                 </option>
               ))}
             </select>

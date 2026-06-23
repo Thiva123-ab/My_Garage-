@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const { db } = require('./firebaseConfig');
@@ -11,6 +12,8 @@ const {
   query,
   orderBy,
 } = require('firebase/firestore');
+
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 const app = express();
 const port = 3001;
@@ -353,6 +356,51 @@ app.post('/api/contact', async (req, res) => {
   } catch (error) {
     console.error('Error saving contact:', error.message);
     res.status(500).json({ error: 'Failed to save contact message' });
+  }
+});
+
+// ============================================================
+// AI CHATBOT ROUTE
+// ============================================================
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || 'MISSING_KEY');
+
+app.post('/api/chat', async (req, res) => {
+  try {
+    if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === 'your_gemini_api_key_here') {
+      return res.status(500).json({ error: 'Gemini API key is not configured. Please add it to the .env file.' });
+    }
+
+    const { history, message } = req.body;
+    if (!message) {
+      return res.status(400).json({ error: 'Message is required.' });
+    }
+
+    const model = genAI.getGenerativeModel({ 
+      model: "gemini-1.5-flash",
+      systemInstruction: "You are a friendly, professional AI customer service assistant for 'AutoSync', a premium vehicle repair and maintenance garage. Keep your answers concise, helpful, and professional. AutoSync offers services like: Engine Diagnostics, Oil Changes, Brake Replacement, Tire Alignment, Electrical Repair, AC Repair, and Pre-Purchase Inspections. Use emojis naturally. Do not make up fake prices, instead suggest the user check the website or contact the garage directly. Do not act as an AI model, but as an integral part of the AutoSync team."
+    });
+
+    const formattedHistory = (history || []).map(msg => ({
+      role: msg.sender === 'user' ? 'user' : 'model',
+      parts: [{ text: msg.text }]
+    }));
+
+    const chatSession = model.startChat({
+      history: formattedHistory,
+      generationConfig: {
+        maxOutputTokens: 800,
+        temperature: 0.7,
+      },
+    });
+
+    const result = await chatSession.sendMessage(message);
+    const responseText = result.response.text();
+
+    res.json({ text: responseText });
+  } catch (error) {
+    console.error('Error with Gemini API:', error.message);
+    res.status(500).json({ error: 'Failed to process chat request' });
   }
 });
 

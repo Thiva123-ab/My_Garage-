@@ -6,7 +6,7 @@ const inventoryItems = [
     name: 'Mobil 1 Full Synthetic Oil 5W-30 (5 qt)',
     category: 'Fluids & Oils',
     quantity: 24,
-    price: 35.99,
+    price: 2999,
     minStock: 10,
     sku: 'OIL-M1-5W30',
     status: 'In Stock'
@@ -15,7 +15,7 @@ const inventoryItems = [
     name: 'Bosch Premium Oil Filter',
     category: 'Filters',
     quantity: 45,
-    price: 12.50,
+    price: 450,
     minStock: 15,
     sku: 'FLT-B-OIL-01',
     status: 'In Stock'
@@ -24,7 +24,7 @@ const inventoryItems = [
     name: 'Brembo Ceramic Front Brake Pads',
     category: 'Brakes',
     quantity: 8,
-    price: 85.00,
+    price: 5500,
     minStock: 5,
     sku: 'BRK-PAD-F-CER',
     status: 'Low Stock'
@@ -33,7 +33,7 @@ const inventoryItems = [
     name: 'NGK Iridium Spark Plugs (Set of 4)',
     category: 'Engine Parts',
     quantity: 12,
-    price: 45.00,
+    price: 2200,
     minStock: 10,
     sku: 'ENG-SPK-NGK',
     status: 'In Stock'
@@ -42,7 +42,7 @@ const inventoryItems = [
     name: 'Michelin Pilot Sport 4S (245/40R18)',
     category: 'Tires',
     quantity: 2,
-    price: 240.00,
+    price: 18500,
     minStock: 4,
     sku: 'TIR-MIC-PS4S',
     status: 'Low Stock'
@@ -51,7 +51,7 @@ const inventoryItems = [
     name: 'Duralast Platinum AGM Battery',
     category: 'Electrical',
     quantity: 0,
-    price: 210.00,
+    price: 8500,
     minStock: 3,
     sku: 'BAT-AGM-DLP',
     status: 'Out of Stock'

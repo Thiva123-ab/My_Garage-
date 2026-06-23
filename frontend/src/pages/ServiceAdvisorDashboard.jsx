@@ -118,7 +118,7 @@ const ServiceAdvisorDashboard = () => {
               <label>Service</label>
               <select value={newJob.service} onChange={e => setNewJob(p => ({ ...p, service: e.target.value }))} required>
                 <option value="">Select service...</option>
-                {services.map(s => <option key={s.id} value={s.name}>{s.name} — ${s.price}</option>)}
+                {services.map(s => <option key={s.id} value={s.name}>{s.name} — Rs.{s.price.toLocaleString('en-IN')}</option>)}
               </select>
             </div>
             <div className="form-group">

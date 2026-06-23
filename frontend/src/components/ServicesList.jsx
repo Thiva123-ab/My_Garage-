@@ -79,7 +79,7 @@ const ServicesList = () => {
               <p>{service.description}</p>
               <div className="service-card-footer">
                 <div className="service-price">
-                  ${service.price} <small>starting</small>
+                  Rs.{service.price.toLocaleString('en-IN')} <small>starting</small>
                 </div>
                 <button
                   className="btn btn-primary btn-sm"
