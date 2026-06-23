@@ -2049,3 +2049,30 @@ h1, h2, h3, h4, h5, h6 {
   border-color: rgba(255, 51, 102, 0.3);
   color: var(--accent-red);
 }
+
+/* --- Dashboard Background Image --- */
+.dashboard {
+  position: relative;
+  z-index: 1;
+}
+
+.dashboard::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('/dashboard_bg.png');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.2; /* Subtle moody visibility */
+  z-index: -1;
+  pointer-events: none;
+  filter: blur(2px) brightness(0.6);
+}
+
+[data-theme="light"] .dashboard::before {
+  opacity: 0.08;
+  filter: blur(2px) brightness(1.2);
+}

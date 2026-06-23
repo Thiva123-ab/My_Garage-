@@ -272,8 +272,10 @@ const AdminDashboard = () => {
                     </span>
                   </td>
                   <td>
-                    <button className="btn btn-sm" style={{ marginRight: '8px', background: 'rgba(255,255,255,0.1)' }} onClick={() => openEditInventory(item)}>Edit</button>
-                    <button className="btn btn-sm" style={{ background: 'rgba(255,51,102,0.2)', color: '#ff3366' }} onClick={() => handleDeleteInventory(item._docId)}>Delete</button>
+                    <div className="action-btn-group">
+                      <button className="action-btn edit-btn" onClick={() => openEditInventory(item)} title="Edit">✏️</button>
+                      <button className="action-btn delete-btn" onClick={() => handleDeleteInventory(item._docId)} title="Delete">🗑️</button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -304,9 +306,9 @@ const AdminDashboard = () => {
               </div>
               <span className="admin-service-duration">{s.duration}</span>
               <span className="admin-service-price" style={{ width: '80px', textAlign: 'right' }}>${s.price}</span>
-              <div style={{ display: 'flex', gap: '0.5rem', marginLeft: '1rem' }}>
-                <button className="btn btn-sm" style={{ background: 'rgba(255,255,255,0.1)' }} onClick={() => openEditService(s)}>Edit</button>
-                <button className="btn btn-sm" style={{ background: 'rgba(255,51,102,0.2)', color: '#ff3366' }} onClick={() => handleDeleteService(s._docId)}>Delete</button>
+              <div className="action-btn-group" style={{ marginLeft: '1rem' }}>
+                <button className="action-btn edit-btn" onClick={() => openEditService(s)} title="Edit">✏️</button>
+                <button className="action-btn delete-btn" onClick={() => handleDeleteService(s._docId)} title="Delete">🗑️</button>
               </div>
             </div>
           ))}
@@ -351,7 +353,9 @@ const AdminDashboard = () => {
                   </td>
                   <td>{job.eta}</td>
                   <td>
-                    <button className="btn btn-sm" style={{ background: 'rgba(255,51,102,0.2)', color: '#ff3366' }} onClick={() => handleDeleteJob(job.id)}>Delete</button>
+                    <div className="action-btn-group">
+                      <button className="action-btn delete-btn" onClick={() => handleDeleteJob(job.id)} title="Delete">🗑️</button>
+                    </div>
                   </td>
                 </tr>
               ))}
