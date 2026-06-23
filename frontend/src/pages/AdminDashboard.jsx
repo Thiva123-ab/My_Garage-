@@ -150,6 +150,32 @@ const AdminDashboard = () => {
     }
   };
 
+  // ============================================================
+  // JOB MANAGEMENT (ADMIN ACTIONS)
+  // ============================================================
+  const handleDeleteJob = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this job?')) return;
+    try {
+      await fetch(`${API_URL}/api/jobs/${id}`, { method: 'DELETE' });
+      fetchData();
+    } catch (err) {
+      console.error('Failed to delete job', err);
+    }
+  };
+
+  const handleUpdateJobStatus = async (id, newStatus) => {
+    try {
+      await fetch(`${API_URL}/api/jobs/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      fetchData();
+    } catch (err) {
+      console.error('Failed to update job status', err);
+    }
+  };
+
   if (loading) return <div className="dashboard-loading">Loading dashboard...</div>;
 
   const pendingJobs = jobs.filter(j => j.status === 'Pending').length;
@@ -296,7 +322,7 @@ const AdminDashboard = () => {
         <div className="jobs-table-wrapper">
           <table className="jobs-table">
             <thead>
-              <tr><th>Job ID</th><th>Vehicle</th><th>Owner</th><th>Service</th><th>Status</th><th>ETA</th></tr>
+              <tr><th>Job ID</th><th>Vehicle</th><th>Owner</th><th>Service</th><th>Status</th><th>ETA</th><th>Manage</th></tr>
             </thead>
             <tbody>
               {jobs.map(job => (
@@ -306,11 +332,27 @@ const AdminDashboard = () => {
                   <td>{job.owner}</td>
                   <td>{job.service}</td>
                   <td>
-                    <span className={`status-badge ${job.status === 'Pending' ? 'pending' : job.status === 'In Progress' ? 'in-progress' : job.status === 'Ready for Pickup' ? 'ready' : 'completed'}`}>
-                      {job.status}
-                    </span>
+                    <select 
+                      value={job.status} 
+                      onChange={(e) => handleUpdateJobStatus(job.id, e.target.value)}
+                      style={{ 
+                        background: 'rgba(0,0,0,0.3)', 
+                        color: 'white', 
+                        border: '1px solid rgba(255,255,255,0.2)', 
+                        padding: '4px', 
+                        borderRadius: '4px' 
+                      }}
+                    >
+                      <option value="Pending">Pending</option>
+                      <option value="In Progress">In Progress</option>
+                      <option value="Ready for Pickup">Ready for Pickup</option>
+                      <option value="Completed">Completed</option>
+                    </select>
                   </td>
                   <td>{job.eta}</td>
+                  <td>
+                    <button className="btn btn-sm" style={{ background: 'rgba(255,51,102,0.2)', color: '#ff3366' }} onClick={() => handleDeleteJob(job.id)}>Delete</button>
+                  </td>
                 </tr>
               ))}
             </tbody>
