@@ -1,8 +1,8 @@
-const fs = require('fs');
-const path = require('path');
+const { db } = require('./firebaseConfig');
+const { collection, doc, setDoc } = require('firebase/firestore');
 
 // ============================================================
-// ALL GARAGE DATA TO SEED INTO LOCAL JSON DB
+// ALL GARAGE DATA TO SEED INTO FIRESTORE
 // ============================================================
 
 const services = [
@@ -90,27 +90,27 @@ const testimonials = [
 // SEED FUNCTION
 // ============================================================
 
-function seed() {
-  console.log('🚀 Starting MyGarage local DB seeding...\n');
+async function seedCollection(collectionName, items, idField) {
+  console.log(`\n📦 Seeding "${collectionName}" (${items.length} documents)...`);
+  for (const item of items) {
+    const docId = String(item[idField]);
+    const docRef = doc(collection(db, collectionName), docId);
+    await setDoc(docRef, item);
+    console.log(`  ✅ ${collectionName}/${docId}`);
+  }
+  console.log(`✔  "${collectionName}" seeded successfully!`);
+}
+
+async function seed() {
+  console.log('🚀 Starting MyGarage Firestore data seeding...\n');
 
   try {
-    const dbPath = path.join(__dirname, 'db.json');
-    
-    // Add internal _docId to everything so our backend functions work correctly
-    const addDocId = (arr) => arr.map(item => ({ _docId: Math.random().toString(36).substr(2, 9), ...item }));
+    await seedCollection('services', services, 'id');
+    await seedCollection('jobs', jobBoard, 'id');
+    await seedCollection('team', teamMembers, 'id');
+    await seedCollection('testimonials', testimonials, 'id');
 
-    const db = {
-      services: addDocId(services),
-      jobs: addDocId(jobBoard),
-      team: addDocId(teamMembers),
-      testimonials: addDocId(testimonials),
-      bookings: [],
-      contacts: []
-    };
-
-    fs.writeFileSync(dbPath, JSON.stringify(db, null, 2));
-
-    console.log('\n🎉 All data seeded to db.json successfully!');
+    console.log('\n🎉 All data seeded successfully!');
     console.log('📊 Summary:');
     console.log(`   - Services:     ${services.length} documents`);
     console.log(`   - Jobs:         ${jobBoard.length} documents`);
@@ -121,6 +121,8 @@ function seed() {
     console.error('❌ Seeding failed:', error.message);
     process.exit(1);
   }
+
+  process.exit(0);
 }
 
 seed();

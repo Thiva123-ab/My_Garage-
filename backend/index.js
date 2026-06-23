@@ -1,7 +1,16 @@
 const express = require('express');
 const cors = require('cors');
-const fs = require('fs');
-const path = require('path');
+const { db } = require('./firebaseConfig');
+const {
+  collection,
+  doc,
+  getDocs,
+  getDoc,
+  addDoc,
+  updateDoc,
+  query,
+  orderBy,
+} = require('firebase/firestore');
 
 const app = express();
 const port = 3001;
@@ -9,55 +18,12 @@ const port = 3001;
 app.use(cors());
 app.use(express.json());
 
-const dbPath = path.join(__dirname, 'db.json');
-
-// Initialize db.json if it doesn't exist
-if (!fs.existsSync(dbPath)) {
-  fs.writeFileSync(dbPath, JSON.stringify({
-    services: [],
-    jobs: [],
-    team: [],
-    testimonials: [],
-    bookings: [],
-    contacts: []
-  }, null, 2));
-}
-
-async function readDB() {
-  const data = await fs.promises.readFile(dbPath, 'utf8');
-  return JSON.parse(data);
-}
-
-async function writeDB(data) {
-  await fs.promises.writeFile(dbPath, JSON.stringify(data, null, 2));
-}
-
 // ============================================================
-// HELPER — read all documents from a collection
+// HELPER — read all documents from a Firestore collection
 // ============================================================
 async function getCollection(name) {
-  const db = await readDB();
-  return db[name] || [];
-}
-
-async function addDoc(collectionName, data) {
-  const db = await readDB();
-  if (!db[collectionName]) db[collectionName] = [];
-  const _docId = Math.random().toString(36).substr(2, 9);
-  const newDoc = { _docId, ...data };
-  db[collectionName].push(newDoc);
-  await writeDB(db);
-  return newDoc;
-}
-
-async function updateDoc(collectionName, docId, updates) {
-  const db = await readDB();
-  if (!db[collectionName]) return;
-  const index = db[collectionName].findIndex(d => d._docId === docId);
-  if (index !== -1) {
-    db[collectionName][index] = { ...db[collectionName][index], ...updates };
-    await writeDB(db);
-  }
+  const snapshot = await getDocs(collection(db, name));
+  return snapshot.docs.map(doc => ({ _docId: doc.id, ...doc.data() }));
 }
 
 // ============================================================
@@ -68,6 +34,7 @@ async function updateDoc(collectionName, docId, updates) {
 app.get('/api/services', async (req, res) => {
   try {
     const services = await getCollection('services');
+    // Sort by id for consistent ordering
     services.sort((a, b) => a.id - b.id);
     res.json(services);
   } catch (error) {
@@ -79,6 +46,7 @@ app.get('/api/services', async (req, res) => {
 app.get('/api/services/categories', async (req, res) => {
   try {
     const services = await getCollection('services');
+    // Sort by id to keep category order consistent
     services.sort((a, b) => a.id - b.id);
     const categories = [...new Set(services.map(s => s.category))];
     res.json(categories);
@@ -115,8 +83,8 @@ app.post('/api/jobs', async (req, res) => {
       eta: eta || 'TBD',
       createdAt: new Date().toISOString(),
     };
-    const newDoc = await addDoc('jobs', jobData);
-    res.status(201).json({ message: 'Job created!', job: newDoc });
+    const docRef = await addDoc(collection(db, 'jobs'), jobData);
+    res.status(201).json({ message: 'Job created!', job: { _docId: docRef.id, ...jobData } });
   } catch (error) {
     console.error('Error creating job:', error.message);
     res.status(500).json({ error: 'Failed to create job' });
@@ -129,6 +97,7 @@ app.patch('/api/jobs/:id', async (req, res) => {
     const jobId = req.params.id;
     const { status, eta } = req.body;
 
+    // Find the job document by its 'id' field
     const jobs = await getCollection('jobs');
     const job = jobs.find(j => j.id === jobId);
 
@@ -140,7 +109,8 @@ app.patch('/api/jobs/:id', async (req, res) => {
     if (status) updates.status = status;
     if (eta) updates.eta = eta;
 
-    await updateDoc('jobs', job._docId, updates);
+    const docRef = doc(db, 'jobs', job._docId);
+    await updateDoc(docRef, updates);
 
     res.json({ message: 'Job updated!', job: { ...job, ...updates } });
   } catch (error) {
@@ -173,7 +143,7 @@ app.get('/api/testimonials', async (req, res) => {
   }
 });
 
-// Booking endpoint
+// Booking endpoint — NOW PERSISTS TO FIRESTORE
 app.post('/api/book', async (req, res) => {
   try {
     const { name, phone, vehicle, service, date, notes } = req.body;
@@ -191,7 +161,7 @@ app.post('/api/book', async (req, res) => {
       status: 'Confirmed',
       createdAt: new Date().toISOString(),
     };
-    await addDoc('bookings', booking);
+    await addDoc(collection(db, 'bookings'), booking);
     res.status(201).json({ message: 'Booking confirmed!', booking });
   } catch (error) {
     console.error('Error creating booking:', error.message);
@@ -199,7 +169,7 @@ app.post('/api/book', async (req, res) => {
   }
 });
 
-// Contact endpoint
+// Contact endpoint — NOW PERSISTS TO FIRESTORE
 app.post('/api/contact', async (req, res) => {
   try {
     const { name, email, message } = req.body;
@@ -213,7 +183,7 @@ app.post('/api/contact', async (req, res) => {
       message,
       createdAt: new Date().toISOString(),
     };
-    await addDoc('contacts', contact);
+    await addDoc(collection(db, 'contacts'), contact);
     res.json({ message: 'Message received! We will get back to you shortly.' });
   } catch (error) {
     console.error('Error saving contact:', error.message);
@@ -223,5 +193,5 @@ app.post('/api/contact', async (req, res) => {
 
 app.listen(port, () => {
   console.log(`MyGarage Backend running at http://localhost:${port}`);
-  console.log(`Connected to Local JSON DB (db.json)`);
+  console.log(`Connected to Firestore (project: mygarage-thiva)`);
 });
