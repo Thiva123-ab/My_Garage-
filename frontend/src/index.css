@@ -2143,6 +2143,10 @@ h1, h2, h3, h4, h5, h6 {
   }
 
   /* Stats grid to 1 column on very small screens */
+  @media (max-width: 480px) {
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
   }
 }
 

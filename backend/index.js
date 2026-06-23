@@ -377,14 +377,20 @@ app.post('/api/chat', async (req, res) => {
     }
 
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
+      model: "gemini-2.5-flash",
       systemInstruction: "You are a friendly, professional AI customer service assistant for 'AutoSync', a premium vehicle repair and maintenance garage. Keep your answers concise, helpful, and professional. AutoSync offers services like: Engine Diagnostics, Oil Changes, Brake Replacement, Tire Alignment, Electrical Repair, AC Repair, and Pre-Purchase Inspections. Use emojis naturally. Do not make up fake prices, instead suggest the user check the website or contact the garage directly. Do not act as an AI model, but as an integral part of the AutoSync team."
     });
 
-    const formattedHistory = (history || []).map(msg => ({
-      role: msg.sender === 'user' ? 'user' : 'model',
-      parts: [{ text: msg.text }]
-    }));
+    const formattedHistory = (history || [])
+      .map(msg => ({
+        role: msg.sender === 'user' ? 'user' : 'model',
+        parts: [{ text: msg.text }]
+      }));
+
+    // Gemini API requires history to start with a 'user' role
+    while (formattedHistory.length > 0 && formattedHistory[0].role === 'model') {
+      formattedHistory.shift();
+    }
 
     const chatSession = model.startChat({
       history: formattedHistory,
