@@ -63,14 +63,7 @@ const services = [
   { id: 34, category: 'Inspection & Maintenance', name: 'Scheduled Maintenance Service', description: 'Manufacturer-recommended service at mileage intervals (30k, 60k, 90k).', price: 250, icon: '📅', duration: '2-4 hrs' },
 ];
 
-const jobBoard = [
-  { id: 'J001', vehicle: '2021 Toyota Camry', owner: 'John D.', service: 'Engine Diagnostics', status: 'In Progress', eta: '2 hrs' },
-  { id: 'J002', vehicle: '2019 Honda Civic', owner: 'Sarah M.', service: 'Brake Pad Replacement', status: 'Ready for Pickup', eta: 'Done' },
-  { id: 'J003', vehicle: '2022 Ford F-150', owner: 'Mike R.', service: 'Full Synthetic Oil Change', status: 'Pending', eta: '30 min' },
-  { id: 'J004', vehicle: '2020 BMW 320i', owner: 'Lisa K.', service: 'AC Recharge & Repair', status: 'In Progress', eta: '1.5 hrs' },
-  { id: 'J005', vehicle: '2018 Nissan Altima', owner: 'David P.', service: 'Tire Replacement & Mounting', status: 'Pending', eta: '1 hr' },
-  { id: 'J006', vehicle: '2023 Mercedes C300', owner: 'Anna W.', service: 'Full Vehicle Inspection', status: 'Completed', eta: 'Done' },
-];
+const jobBoard = [];
 
 const teamMembers = [
   { id: 1, name: 'James Rodriguez', role: 'Master Mechanic', specialty: 'Engine & Transmission', experience: '15 years', avatar: '👨‍🔧' },
