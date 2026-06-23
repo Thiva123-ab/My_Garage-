@@ -2066,13 +2066,86 @@ h1, h2, h3, h4, h5, h6 {
   background-image: url('/dashboard_bg.png');
   background-size: cover;
   background-position: center;
-  opacity: 0.2; /* Subtle moody visibility */
+  opacity: 0.6; /* Increased visibility */
   z-index: -1;
   pointer-events: none;
-  filter: blur(2px) brightness(0.6);
+  filter: blur(0px) brightness(0.8);
+}
+
+/* Glassmorphism for readable content over bright background */
+.dashboard-section, .stat-card, .jobs-table-wrapper {
+  background: rgba(18, 18, 26, 0.75) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border-radius: var(--radius-md);
+}
+
+.dashboard-section {
+  padding: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 [data-theme="light"] .dashboard::before {
-  opacity: 0.08;
-  filter: blur(2px) brightness(1.2);
+  opacity: 0.15;
+  filter: blur(0px) brightness(1.2);
+}
+
+[data-theme="light"] .dashboard-section, [data-theme="light"] .stat-card, [data-theme="light"] .jobs-table-wrapper {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================================
+   MOBILE RESPONSIVENESS UPDATES
+   ============================================================ */
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 6rem 1rem 2rem 1rem !important; /* Account for navbar on mobile */
+  }
+
+  .dashboard-section {
+    padding: 1rem;
+  }
+
+  /* Make tables scrollable horizontally on mobile */
+  .jobs-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -1rem; /* Full bleed on mobile */
+    padding: 0 1rem;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+
+  .jobs-table {
+    min-width: 600px; /* Ensure content doesn't get crushed */
+  }
+
+  /* Stack admin service rows */
+  .admin-service-row {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .admin-service-duration, .admin-service-price {
+    text-align: left;
+    min-width: auto;
+  }
+  
+  .action-btn-group {
+    width: 100%;
+    justify-content: flex-end;
+    margin-left: 0 !important;
+    margin-top: 0.5rem;
+  }
+
+  /* Stats grid to 1 column on very small screens */
+  @media (max-width: 480px) {
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
 }

@@ -215,6 +215,29 @@ app.get('/api/testimonials', async (req, res) => {
   }
 });
 
+app.post('/api/testimonials', async (req, res) => {
+  try {
+    const { name, vehicle, rating, text } = req.body;
+    if (!name || !vehicle || !rating || !text) {
+      return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    const newTestimonial = {
+      name,
+      vehicle,
+      rating: Number(rating),
+      text,
+      id: Date.now() // Simple unique ID generator
+    };
+
+    const docRef = await addDoc(collection(db, 'testimonials'), newTestimonial);
+    res.status(201).json({ id: docRef.id, ...newTestimonial });
+  } catch (error) {
+    console.error('Error adding testimonial:', error.message);
+    res.status(500).json({ error: 'Failed to add testimonial' });
+  }
+});
+
 // ============================================================
 // INVENTORY ROUTES
 // ============================================================

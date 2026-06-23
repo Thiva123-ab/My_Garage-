@@ -37,7 +37,7 @@ export const ROLE_INFO = {
     color: '#ff9100',
     description: 'View assigned jobs, update repair status, log parts',
     isStaff: true,
-    passcode: '5678',
+    passcode: 'mechanic@123',
   },
   [ROLES.SERVICE_ADVISOR]: {
     label: 'Service Advisor',
@@ -45,7 +45,7 @@ export const ROLE_INFO = {
     color: '#00e676',
     description: 'Handle bookings, assign jobs, communicate with customers',
     isStaff: true,
-    passcode: '9012',
+    passcode: 'advisor@123',
   },
 };
 
