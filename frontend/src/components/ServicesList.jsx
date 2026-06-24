@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useBooking } from '../context/BookingContext.jsx';
 
-const API_URL = 'http://localhost:3001';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 const ServicesList = () => {
   const [services, setServices] = useState([]);
