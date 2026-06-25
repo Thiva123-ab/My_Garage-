@@ -17,6 +17,7 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 const app = express();
 const port = process.env.PORT || 3001;
+const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
 
 app.use(cors());
 app.use(express.json());
@@ -365,6 +366,16 @@ app.post('/api/contact', async (req, res) => {
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || 'MISSING_KEY');
 
+// Simple health endpoint to aid debugging in dev/prod
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    port,
+    hasGeminiKey: Boolean(process.env.GEMINI_API_KEY) && process.env.GEMINI_API_KEY !== 'your_gemini_api_key_here',
+    model: GEMINI_MODEL,
+  });
+});
+
 app.post('/api/chat', async (req, res) => {
   try {
     if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === 'your_gemini_api_key_here') {
@@ -377,7 +388,7 @@ app.post('/api/chat', async (req, res) => {
     }
 
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-2.5-flash",
+      model: GEMINI_MODEL,
       systemInstruction: "You are a friendly, professional AI customer service assistant for 'AutoSync', a premium vehicle repair and maintenance garage. Keep your answers concise, helpful, and professional. AutoSync offers services like: Engine Diagnostics, Oil Changes, Brake Replacement, Tire Alignment, Electrical Repair, AC Repair, and Pre-Purchase Inspections. Use emojis naturally. Do not make up fake prices, instead suggest the user check the website or contact the garage directly. Do not act as an AI model, but as an integral part of the AutoSync team."
     });
 
@@ -387,7 +398,6 @@ app.post('/api/chat', async (req, res) => {
         parts: [{ text: msg.text }]
       }));
 
-    // Gemini API requires history to start with a 'user' role
     while (formattedHistory.length > 0 && formattedHistory[0].role === 'model') {
       formattedHistory.shift();
     }
@@ -405,8 +415,8 @@ app.post('/api/chat', async (req, res) => {
 
     res.json({ text: responseText });
   } catch (error) {
-    console.error('Error with Gemini API:', error.message);
-    res.status(500).json({ error: 'Failed to process chat request' });
+    console.error('Error with Gemini API:', error?.stack || error?.message || error);
+    res.status(500).json({ error: `Gemini error: ${error?.message || 'Unknown error'}` });
   }
 });
 
